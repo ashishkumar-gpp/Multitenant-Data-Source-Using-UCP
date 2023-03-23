@@ -1,0 +1,29 @@
+persistence.xml or hibernate.cfg.xml or both 
+<!-- below is sample code should be in your persistence or hibernate config file -->
+
+<?xml version="1.0" encoding="UTF-8"?>
+<!--must include all JPA classes, embedded IDs and super classes -->
+<persistence
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence     http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
+	version="1.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<persistence-unit name="GPP_CACHE" transaction-type="JTA">
+<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+		<class>.....................................</class>
+		<class>.....................................</class>
+	
+	
+	<properties>
+		
+		<property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.WeblogicJtaPlatform"/>
+		
+		<!--#######Your other Configiration related to Projects#######-->	
+		
+	         <property name="hibernate.multiTenancy" value="DATABASE"/>
+    		 <property name="hibernate.tenant_identifier_resolver" value="backend.dataaccess.dao.DatabaseTenantResolver"/> 
+             <property name="hibernate.multi_tenant_connection_provider" value="backend.dataaccess.dao.MapMultiTenantConnectionProvider "/>  
+			 
+		<!--#######Your other Configiration related to Projects#######-->	
+	</properties>
+	</persistence-unit>
+</persistence>
