@@ -1,3 +1,19 @@
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+
+import org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl;
+import org.hibernate.engine.jdbc.connections.spi.AbstractMultiTenantConnectionProvider;
+import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
+
+import oracle.ucp.jdbc.PoolDataSource;
+
+
 public class MapMultiTenantConnectionProvider extends AbstractMultiTenantConnectionProvider {
   DatabaseTenantResolver resolver;
 
