@@ -1,0 +1,75 @@
+public class MapMultiTenantConnectionProvider extends AbstractMultiTenantConnectionProvider {
+  DatabaseTenantResolver resolver;
+
+  private Map<String, ConnectionProvider> connectionProviderMap = new HashMap<>();
+  final static Logger logger = LoggerFactory.getLogger(MapMultiTenantConnectionProvider.class);
+  
+  
+  public MapMultiTenantConnectionProvider() throws IOException {
+     resolver = new DatabaseTenantResolver();
+      }
+  @Override
+  public Connection getAnyConnection() throws SQLException {
+    Connection connection = null;
+     
+    try {
+      connection= getSharedUCPConeectionToPDB();
+    } catch (Exception e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    logger.debug("  *********getAnyConnection ********* ");
+    return connection;
+  }
+  @Override
+  public void releaseAnyConnection(Connection connection) throws SQLException {
+    logger.debug("  *********releaseAnyConnection ********* ");
+    connection.close();
+    connection =null;
+  }
+   @Override
+  public void releaseConnection(String tenantIdentifier, Connection connection) throws SQLException {
+    logger.debug("  *********releaseConnection  ********* ");
+    connection.close();
+    connection =null;
+  }
+   @Override
+  protected ConnectionProvider selectConnectionProvider(String tenantIdentifier) {
+    return connectionProviderMap.get(tenantIdentifier);
+  }
+  @Override
+  public Connection getConnection(String tenantIdentifier) throws SQLException {
+    Connection conn =  null;
+    try {
+      conn=  getSharedUCPConeectionToPDB() ;
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    logger.debug("  *********getConnection ********* ");
+    return conn;
+  }
+  
+  private  Connection getSharedUCPConeectionToPDB() throws Exception {
+    PoolDataSource multiTenantDS = null;
+    DatabaseTenantResolver resolver = new DatabaseTenantResolver();
+    try {
+      multiTenantDS =  (PoolDataSource) ServiceLocator.getInstance().dbDatasourceLookup("jdbc/##put Shared Datasource Name##");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    Connection tenantConnection = null;
+    try {
+     
+     if ("tenant1_ds".equals(resolver.resolveCurrentTenantIdentifier())) {
+        tenantConnection = multiTenantDS.createConnectionBuilder().serviceName("pdb1").user("test_user1").password("password1").build();
+      } else {
+        tenantConnection = multiTenantDS.createConnectionBuilder().serviceName("pdb2").user("test_user2").password("password1").build();
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    logger.debug("  *********+ getSharedUCPConeectionToPDB ********* ");
+    return tenantConnection;
+  }
