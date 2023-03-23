@@ -14,3 +14,5 @@ Prerequisite .
 
 **Java Code**
 1. Add properies in hibernate.cfg.xml and persistence.xml file as shown in sample code.
+2. MapMultiTenantConnectionProvider.getSharedUCPCOneectionPDB (...) could be used in your custom defined class 
+    to established connection in your project
