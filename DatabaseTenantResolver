@@ -1,0 +1,39 @@
+public class DatabaseTenantResolver extends MuiltitenancyResolver {
+
+  public Map<String, String> userDatasourceMap;
+
+  public DatabaseTenantResolver() {
+    userDatasourceMap = new HashMap();
+  
+    userDatasourceMap.put("tenant1_ds", "tenant1_ds");
+    userDatasourceMap.put("tenant2_ds", "tenant2_ds");
+  }
+
+  @Override
+  public String resolveCurrentTenantIdentifier() {
+    if (this.tenantIdentifier != null && userDatasourceMap.containsKey(this.tenantIdentifier)) {
+      return userDatasourceMap.get(this.tenantIdentifier);
+    }
+   
+    Admin admin = Admin.getContextAdmin();
+    String sUserID = "";
+    if(admin != null){
+    final WebSessionInfo webSessionInfo = admin.getWebSessionInfo();
+    
+    if (!GlobalUtils.isObjectNullOrEmpty(webSessionInfo)) {
+      sUserID = webSessionInfo.getUserID();
+  }
+    }
+	
+	// in below sample tenantIdentifier is hard coded based on login user . In your application you can get it from relevnt source
+    if ("ASH1".equals(sUserID)) {
+      return userDatasourceMap.get("tenant2_ds");
+    } else {
+      return userDatasourceMap.get("tenant1_ds");
+    }
+  }
+
+  @Override
+  public boolean validateExistingCurrentSessions() {
+    return true;
+  }
