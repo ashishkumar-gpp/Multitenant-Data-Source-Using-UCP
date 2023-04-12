@@ -1,4 +1,4 @@
-# Single-Multitenant Data Source Using Oracle UCP
+# Single Multitenant Data Source Using Oracle UCP
 
 Prerequisite .
 
